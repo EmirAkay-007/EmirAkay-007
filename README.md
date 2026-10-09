@@ -1,11 +1,6 @@
-# Hüseyin Emir Akay
+<img src="assets/header.svg" width="100%" alt="Hüseyin Emir Akay. Computer Engineering student at Atatürk University; vice captain and software developer of the ARES UAV team; builds ground control stations and operator interfaces. Path so far: Atatürk University (2024), ARES ground station lead (2025), TEKNOFEST finalist 25th of 873 (2025), vice captain and finalist 34th of 1053 (2026), next: internship.">
 
-Third-year Computer Engineering student at Atatürk University, building ground control station and operator interface software for unmanned aerial vehicles.
-
-Vice captain and software developer of the **ARES UAV team** (ground control station lead in 2025), competing in the TEKNOFEST Fighting UAV competition:
-
-- **2026:** finalist, 34th of 1053 teams
-- **2025:** finalist, 25th of 873 teams
+I'm Hüseyin Emir Akay, a third-year Computer Engineering student at Atatürk University. I build ground control station and operator interface software for unmanned aerial vehicles, and I'm vice captain and software developer of the ARES UAV team, a TEKNOFEST Fighting UAV finalist in 2025 (25th of 873 teams) and 2026 (34th of 1053).
 
 ## What I work on
 
@@ -18,12 +13,14 @@ Vice captain and software developer of the **ARES UAV team** (ground control sta
 
 ## Projects
 
-| Project | What it is | Stack |
-|---|---|---|
-| [SihaInterface](https://github.com/EmirAkay-007/SihaInterface) | The ARES team's ground control station, continued independently from kadir1243's original. My part: dive guidance, QR detection and flight-parameter handling. | Python, PySide6, QML, pymavlink |
-| [ARE-İON](https://github.com/EmirAkay-007/C-_interface_mavlink) | First-generation ground control station with live telemetry, satellite map and onboard video. | C#, .NET 8, WinForms, WebView2 |
-| [Kampüs Yolu](https://github.com/EmirAkay-007/kampus_yolu) | Map-based campus social app with matching, chat and an admin panel, built with a teammate. I wrote the backend. | PHP, MySQL 8, JavaScript, Leaflet |
-| [Dogruluk](https://github.com/EmirAkay-007/dogruluk) | A linked-list-based data structure that produces cumulative arrival times. | C++ |
+<p>
+  <a href="https://github.com/EmirAkay-007/SihaInterface"><img src="assets/card-sihainterface.svg" width="49%" alt="SihaInterface: the ARES team's ground control station, continued independently from kadir1243's original. My part: dive guidance, QR detection and flight-parameter handling. Python, PySide6, QML, pymavlink."></a>
+  <a href="https://github.com/EmirAkay-007/C-_interface_mavlink"><img src="assets/card-areion.svg" width="49%" alt="ARE-İON: first-generation ground control station with live telemetry, a satellite map and onboard video in one window. C#, .NET 8, WinForms, WebView2."></a>
+</p>
+<p>
+  <a href="https://github.com/EmirAkay-007/kampus_yolu"><img src="assets/card-kampus-yolu.svg" width="49%" alt="Kampüs Yolu: map-based campus social app with matching, chat and an admin panel. Built with a teammate; I wrote the backend. PHP, MySQL 8, JavaScript, Leaflet."></a>
+  <a href="https://github.com/EmirAkay-007/dogruluk"><img src="assets/card-dogruluk.svg" width="49%" alt="Dogruluk: a linked-list-based data structure that keeps timing on the transitions between stops and produces cumulative arrival times. C++17."></a>
+</p>
 
 ## Tools
 
@@ -37,3 +34,9 @@ Vice captain and software developer of the **ARES UAV team** (ground control sta
 ## Contact
 
 [LinkedIn](https://www.linkedin.com/in/huseyinemirakay) · Open to internship opportunities in UAV operator interfaces and ground control software.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/EmirAkay-007/EmirAkay-007/output/snake-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/EmirAkay-007/EmirAkay-007/output/snake-light.svg">
+  <img src="https://raw.githubusercontent.com/EmirAkay-007/EmirAkay-007/output/snake-dark.svg" width="100%" alt="Contribution calendar drawn as a snake animation">
+</picture>

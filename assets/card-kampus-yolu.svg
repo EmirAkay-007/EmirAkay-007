@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 268" width="430" height="134" role="img" aria-labelledby="t d">
+<title id="t">Kampüs Yolu</title><desc id="d">Map-based campus social app with matching, chat and an admin panel. Built with a teammate; I wrote the backend. Built with PHP, MySQL 8, JavaScript, Leaflet.</desc>
+<defs><radialGradient id="g" cx="0" cy="0" r="1"><stop offset="0" stop-color="#0B1F4B"/><stop offset="0.6" stop-color="#050D1F"/><stop offset="1" stop-color="#000000"/></radialGradient></defs>
+<rect width="860" height="268" rx="22" fill="#000000"/><rect width="860" height="268" rx="22" fill="url(#g)" opacity="0.85"/>
+<rect x="1" y="1" width="858" height="266" rx="21" fill="none" stroke="#16306B" stroke-width="2"/>
+<text x="40" y="72" font-family="Georgia, 'Times New Roman', serif" font-size="40" fill="#E8EEFA">Kampüs Yolu</text>
+<text x="820" y="68" text-anchor="end" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', 'Liberation Mono', monospace" font-size="21" fill="#3F74D6">2026</text>
+<text x="40" y="122" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22.5" fill="#A9BEE6">Map-based campus social app with matching, chat and an admin</text>
+<text x="40" y="153" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22.5" fill="#A9BEE6">panel. Built with a teammate; I wrote the backend.</text>
+<text x="40" y="234" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', 'Liberation Mono', monospace" font-size="20" fill="#7FB2FF">PHP, MySQL 8, JavaScript, Leaflet</text>
+</svg>
