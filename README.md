@@ -35,8 +35,4 @@ I'm Hüseyin Emir Akay, a third-year Computer Engineering student at Atatürk Un
 
 [LinkedIn](https://www.linkedin.com/in/huseyinemirakay) · Open to internship opportunities in UAV operator interfaces and ground control software.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/EmirAkay-007/EmirAkay-007/output/snake-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/EmirAkay-007/EmirAkay-007/output/snake-light.svg">
-  <img src="https://raw.githubusercontent.com/EmirAkay-007/EmirAkay-007/output/snake-dark.svg" width="100%" alt="Contribution calendar drawn as a snake animation">
-</picture>
+<img src="https://raw.githubusercontent.com/EmirAkay-007/EmirAkay-007/output/altitude.svg" width="100%" alt="Climb profile: cumulative GitHub contributions over the last 12 months, drawn as an altitude line that rises by one unit per contribution. Updated daily.">
