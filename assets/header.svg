@@ -9,7 +9,7 @@
 <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse"><path d="M44 0H0V44" fill="none" stroke="#16306B" stroke-width="1" opacity="0.55"/></pattern>
 <mask id="stripfade"><rect x="0" y="524" width="1760" height="236" fill="url(#fade)"/></mask>
 <clipPath id="adi"><circle cx="1550" cy="250" r="138"/></clipPath>
-<clipPath id="scan"><rect x="20" y="30" width="500" height="0"><animate attributeName="height" from="0" to="500" dur="1.3s" begin="0.15s" fill="freeze" calcMode="spline" keySplines="0.3 0 0.2 1" keyTimes="0;1"/></rect></clipPath>
+<clipPath id="scan"><rect x="20" y="30" width="500" height="0"><animate attributeName="height" from="0" to="500" dur="2.6s" begin="0.15s" fill="freeze" calcMode="spline" keySplines="0.3 0 0.2 1" keyTimes="0;1"/></rect></clipPath>
 </defs>
 <style>
 .mono{font-family:ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', 'Liberation Mono', monospace} .serif{font-family:Georgia, 'Times New Roman', serif} .sans{font-family:system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif}

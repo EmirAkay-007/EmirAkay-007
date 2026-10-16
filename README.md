@@ -4,14 +4,20 @@ I'm Hüseyin Emir Akay, a third-year Computer Engineering student at Atatürk Un
 
 ## What I work on
 
-<img src="assets/kamikaze-dive.webp" align="right" width="300" alt="Onboard camera view of an autonomous dive in simulation: the aircraft noses down toward a target on the runway, then pulls out and climbs away.">
-
 - **Ground control stations.** Two generations of the ARES ground control station: I built the 2025 version in C# / .NET and am a developer of the 2026 version in Python with Qt / QML. Real-time map, camera and flight data on one screen, with telemetry, video and server streams handled in parallel.
-- **Guidance and autonomy.** Guidance for an autonomous dive manoeuvre (the clip shows one in simulation), QR-based target detection with recovery logic, and telemetry, geofence and waypoint handling over MAVLink. Validated in ArduPilot SITL, Gazebo and ROS 2.
+- **Guidance and autonomy.** Guidance for an autonomous dive manoeuvre (the clips below show it in simulation and in a real flight), QR-based target detection with recovery logic, and telemetry, geofence and waypoint handling over MAVLink. Validated in ArduPilot SITL, Gazebo and ROS 2, and flown on the real aircraft.
 - **Computer vision.** A YOLOv8 detector trained on 70,000 images, integrated into an OpenCV pipeline and running at 30–35 FPS with TensorRT.
 - **Data links.** Video over a Rocket M5 radio link and JSON data exchange with the competition server.
 
 **Currently:** an embedded target-lock system on a Raspberry Pi 4 with an AI camera and an Arduino UNO Q.
+
+<p align="center">
+  <img src="assets/kamikaze-dive.webp" width="300" alt="Onboard camera view of an autonomous dive in simulation: the aircraft noses down toward a target on the runway, then pulls out and climbs away.">
+  &nbsp;
+  <img src="assets/kamikaze-real.webp" width="300" alt="Real flight of the autonomous dive manoeuvre, filmed from the ground: the aircraft is the small dark shape moving against the clouds.">
+  <br>
+  <sub>Autonomous dive: simulation, onboard camera (left) · real flight, filmed from the ground (right)</sub>
+</p>
 
 ## Projects
 
