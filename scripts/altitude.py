@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Draw the last year of GitHub contributions as a climb profile (SVG).
+"""Draw every GitHub contribution, from the first one on, as a climb profile (SVG).
 
 Every contribution adds one unit of altitude, so the line only ever climbs:
-flat stretches are quiet weeks, steep steps are busy days.
+flat stretches are quiet weeks, steep steps are busy days. GitHub hands out at
+most one year of the contribution calendar per query, so the script asks which
+years have contributions and fetches them one by one.
 
 Usage on GitHub Actions (see .github/workflows/altitude.yml):
     GH_TOKEN=... GH_LOGIN=EmirAkay-007 python3 scripts/altitude.py
-Local test with a saved API response:
+Local test with saved API responses (--save writes them):
     python3 scripts/altitude.py --input calendar.json --output dist/altitude.svg
 """
 import argparse
@@ -16,7 +18,9 @@ import os
 import urllib.request
 from xml.sax.saxutils import escape
 
-QUERY = """query($login:String!){user(login:$login){contributionsCollection{
+YEARS = """query($login:String!){user(login:$login){contributionsCollection{contributionYears}}}"""
+CALENDAR = """query($login:String!,$from:DateTime!,$to:DateTime!){user(login:$login){
+contributionsCollection(from:$from,to:$to){
 contributionCalendar{totalContributions weeks{contributionDays{date contributionCount}}}}}}"""
 
 COLORS = dict(black="#000000", navy9="#050D1F", navy7="#0B1F4B", line="#16306B",
@@ -27,8 +31,8 @@ SANS = "system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
-def fetch(login, token):
-    body = json.dumps({"query": QUERY, "variables": {"login": login}}).encode()
+def graphql(query, variables, token):
+    body = json.dumps({"query": query, "variables": variables}).encode()
     req = urllib.request.Request("https://api.github.com/graphql", data=body, headers={
         "Authorization": "bearer " + token, "Content-Type": "application/json", "User-Agent": "altitude-profile"})
     with urllib.request.urlopen(req, timeout=30) as resp:
@@ -38,11 +42,35 @@ def fetch(login, token):
     return data
 
 
-def days_from(data):
-    cal = data["data"]["user"]["contributionsCollection"]["contributionCalendar"]
-    days = [(dt.date.fromisoformat(d["date"]), int(d["contributionCount"]))
-            for w in cal["weeks"] for d in w["contributionDays"]]
-    days.sort()
+def fetch(login, token):
+    """The calendar of every year with contributions, oldest first, as GitHub answers it."""
+    years = graphql(YEARS, {"login": login}, token)["data"]["user"]["contributionsCollection"]["contributionYears"]
+    return [graphql(CALENDAR, {"login": login, "from": "%d-01-01T00:00:00Z" % y, "to": "%d-12-31T23:59:59Z" % y}, token)
+            for y in sorted(years)]
+
+
+def days_from(answers, today):
+    """Every day from the first of the month of the first contribution to today, with its count.
+
+    A year's calendar runs to 31 December; the days after today are left out, unless one
+    already holds contributions (time zones can put them a day ahead).
+    """
+    counts = {}
+    for data in answers:
+        cal = data["data"]["user"]["contributionsCollection"]["contributionCalendar"]
+        for w in cal["weeks"]:
+            for d in w["contributionDays"]:
+                day = dt.date.fromisoformat(d["date"])
+                # should two calendars ever share a day, a zero must not hide its count
+                counts[day] = max(counts.get(day, 0), int(d["contributionCount"]))
+    active = sorted(day for day, k in counts.items() if k)
+    if not active:
+        raise SystemExit("no contributions to draw")
+    day, end = active[0].replace(day=1), max(today, active[-1])
+    days = []
+    while day <= end:
+        days.append((day, counts.get(day, 0)))
+        day += dt.timedelta(days=1)
     return days
 
 
@@ -77,8 +105,9 @@ def render(days, today=None):
     o = []
     a = o.append
     first, last = days[0][0], days[-1][0]
+    since = "%s %d" % (MONTHS[first.month - 1], first.year)
     a('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %d %d" width="%d" height="%d" role="img" aria-labelledby="t d">' % (W, H, W // 2, H // 2))
-    a('<title id="t">Climb profile: %d contributions in the last 12 months</title>' % total)
+    a('<title id="t">Climb profile: %d contributions since %s</title>' % (total, since))
     a('<desc id="d">Cumulative GitHub contributions from %s to %s, drawn as an altitude line that climbs by one unit per contribution.</desc>'
       % (first.strftime("%d %b %Y"), last.strftime("%d %b %Y")))
     a('<defs><clipPath id="card"><rect width="%d" height="%d" rx="28"/></clipPath>' % (W, H))
@@ -90,7 +119,7 @@ def render(days, today=None):
     a('<rect x="1" y="1" width="%d" height="%d" rx="27" fill="none" stroke="%s" stroke-width="2"/>' % (W - 2, H - 2, c["line"]))
 
     a('<text x="48" y="74" font-family="%s" font-size="40" fill="%s">Climb profile</text>' % (SERIF, c["paper"]))
-    a('<text x="48" y="110" font-family="%s" font-size="22" fill="%s">Cumulative contributions over the last 12 months</text>' % (SANS, c["soft"]))
+    a('<text x="48" y="110" font-family="%s" font-size="22" fill="%s">Cumulative contributions since %s</text>' % (SANS, c["soft"], since))
 
     # altitude grid: three levels, recessive
     for v in (0, top // 2, top):
@@ -98,12 +127,18 @@ def render(days, today=None):
         a('<path d="M%d %.1fH%d" stroke="%s" stroke-width="1.5" opacity="%s"/>' % (x0, y, x1, c["line"], "1" if v == 0 else "0.7"))
         a('<text x="%d" y="%.1f" text-anchor="end" font-family="%s" font-size="19" fill="%s">%d</text>' % (x0 - 16, y + 6, MONO, c["muted"], v))
 
-    # month marks along the baseline
-    for i, (d, _) in enumerate(days):
-        if d.day == 1 and X(i) < x1 - 40:
-            label = MONTHS[d.month - 1] + (" %d" % d.year if d.month == 1 else "")
-            a('<path d="M%.1f %dv8" stroke="%s" stroke-width="1.5"/>' % (X(i), y_base, c["line"]))
-            a('<text x="%.1f" y="%d" font-family="%s" font-size="19" fill="%s">%s</text>' % (X(i) + 6, y_base + 34, MONO, c["muted"], label))
+    # month marks along the baseline: every month, then every quarter, then every January,
+    # so they never crowd as the years add up; the first mark and January's carry the year
+    months = (last.year - first.year) * 12 + last.month - first.month
+    step = 1 if months <= 14 else 3 if months <= 42 else 12
+    ticks = [i for i, (d, _) in enumerate(days) if d.day == 1 and (d.month - 1) % step == 0 and X(i) < x1 - 40]
+    if not ticks or ticks[0] > 0 and X(ticks[0]) - X(0) > 110:   # the first month too, when its label fits
+        ticks.insert(0, 0)
+    for j, i in enumerate(ticks):
+        d = days[i][0]
+        label = MONTHS[d.month - 1] + (" %d" % d.year if d.month == 1 or j == 0 else "")
+        a('<path d="M%.1f %dv8" stroke="%s" stroke-width="1.5"/>' % (X(i), y_base, c["line"]))
+        a('<text x="%.1f" y="%d" font-family="%s" font-size="19" fill="%s">%s</text>' % (X(i) + 6, y_base + 34, MONO, c["muted"], label))
 
     a('<path d="%s" fill="url(#fill)"/>' % area)
     a('<path d="%s" fill="none" stroke="%s" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>' % (line, c["signal"]))
@@ -115,8 +150,8 @@ def render(days, today=None):
         d = days[best][0]
         a('<circle cx="%.1f" cy="%.1f" r="6" fill="%s" stroke="%s" stroke-width="3"/>' % (bx, by, c["black"], c["signal"]))
         left = bx > x0 + 420          # label on the left of the point unless it would run off the card
-        a('<text x="%.1f" y="%.1f" text-anchor="%s" font-family="%s" font-size="20" fill="%s">steepest day: +%d on %d %s</text>'
-          % (bx - 16 if left else bx + 16, by - 12, "end" if left else "start", SANS, c["soft"], days[best][1], d.day, MONTHS[d.month - 1]))
+        a('<text x="%.1f" y="%.1f" text-anchor="%s" font-family="%s" font-size="20" fill="%s">steepest day: +%d on %d %s %d</text>'
+          % (bx - 16 if left else bx + 16, by - 12, "end" if left else "start", SANS, c["soft"], days[best][1], d.day, MONTHS[d.month - 1], d.year))
 
     # aircraft at the current altitude
     ex, ey = pts[-1]
@@ -133,15 +168,22 @@ def render(days, today=None):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--input", help="saved GraphQL response (for local testing)")
+    ap.add_argument("--input", help="saved GraphQL responses (for local testing)")
+    ap.add_argument("--save", help="also save the GraphQL responses to this file")
     ap.add_argument("--output", default="dist/altitude.svg")
     args = ap.parse_args()
     if args.input:
         with open(args.input, encoding="utf-8") as f:
-            data = json.load(f)
+            answers = json.load(f)
+        if isinstance(answers, dict):  # one response, as the one-year version saved it
+            answers = [answers]
     else:
-        data = fetch(os.environ["GH_LOGIN"], os.environ["GH_TOKEN"])
-    svg = render(days_from(data))
+        answers = fetch(os.environ["GH_LOGIN"], os.environ["GH_TOKEN"])
+    if args.save:
+        with open(args.save, "w", encoding="utf-8") as f:
+            json.dump(answers, f)
+    today = dt.date.today()
+    svg = render(days_from(answers, today), today)
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(svg)
